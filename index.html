@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sohbet Uygulaması</title>
+  <style>
+    body { font-family: sans-serif; background: #f0f0f0; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 8px; background: #fff; margin: 5px 0; border-radius: 4px; }
+    input { padding: 10px; width: 80%; }
+    button { padding: 10px; }
+  </style>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form id="form">
+    <input id="input" autocomplete="off" /><button>Gönder</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById('form');
+    const input = document.getElementById('input');
+    const messages = document.getElementById('messages');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    });
+
+    socket.on('chat message', function(msg) {
+      const item = document.createElement('li');
+      item.textContent = msg;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+  </script>
+</body>
+</html>
